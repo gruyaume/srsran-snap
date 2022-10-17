@@ -1,0 +1,68 @@
+name: srsran
+base: core20
+version: '22.04.1'
+summary: srsRAN is a 4G/5G software radio suite developed by SRS.
+description: srsRAN is a 4G/5G software radio suite developed by SRS.
+
+grade: devel
+confinement: devmode
+
+apps:
+  srsepc:
+    command: usr/local/bin/srsepc
+
+#
+#  srsenb:
+#    command: srsenb
+#
+#  srsue:
+#    command: srsue
+
+parts:
+
+  libzmq:
+    plugin: make
+    source: https://github.com/zeromq/libzmq.git
+    build-packages:
+      - libtool
+      - autoconf
+      - automake
+    override-build: |
+      set -x
+      ./autogen.sh
+      ./configure
+      snapcraftctl build
+      ldconfig
+
+  czmq:
+    after:
+      - libzmq
+    plugin: make
+    source: https://github.com/zeromq/czmq.git
+    override-build: |
+      set -x
+      ./autogen.sh
+      ./configure
+      snapcraftctl build
+      ldconfig
+
+  srsran:
+    after:
+      - czmq
+    plugin: make
+    source: https://github.com/srsRAN/srsRAN.git
+    build-packages:
+      - build-essential
+      - cmake
+      - libfftw3-dev
+      - libmbedtls-dev
+      - libboost-program-options-dev
+      - libconfig++-dev
+      - libsctp-dev
+    override-build: |
+      set -x
+      mkdir build
+      cd build
+      cmake ../
+      snapcraftctl build
+      srsran_install_configs.sh user
