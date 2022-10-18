@@ -11,28 +11,27 @@ The srsRAN suite includes:
 
 For application features, build instructions and user guides see the [srsRAN documentation](https://docs.srsran.com/en/latest/).
 
+> **Warning**: Running the eNodeB and the UE is not yet supported.
+
 ## Usage
 
 ### Install
 
 ```bash
-snap install srsran
+sudo snap install srsran
+sudo snap connect srsran:network-control :network-control
 ```
 
 ### Run the EPC
 
 ```bash
-srsepc
+sudo srsran.srsepc <path to epc.conf>
 ```
 
-### Run the eNodeB
+`epc.conf` and all the files referred in it (ex. `user_db.csv`) must be located in the user's home 
+directory.
 
-```bash
-srsenb --rf.device_name=zmq --rf.device_args="fail_on_disconnect=true,tx_port=tcp://*:2000,rx_port=tcp://localhost:2001,id=enb,base_srate=23.04e6"
-```
-
-### Run the UE
-
-```bash
-srsue --rf.device_name=zmq --rf.device_args="tx_port=tcp://*:2001,rx_port=tcp://localhost:2000,id=ue,base_srate=23.04e6" --gw.netns=ue1
-```
+# TODO
+- Log to `/var/snap/srsran/log/`
+- Add support for srsenb and srsue
+- Switch from `devmode` to `strict` confinement (currently prevented by this [issue](https://forum.snapcraft.io/t/apparmor-denies-bind-unix-socket-to-address/32231)).
