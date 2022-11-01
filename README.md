@@ -19,7 +19,6 @@ For application features, build instructions and user guides see the [srsRAN doc
 
 ```bash
 sudo snap install srsran
-sudo snap connect srsran:network-control :network-control
 ```
 
 ### Run the EPC

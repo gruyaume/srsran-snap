@@ -18,8 +18,24 @@ apps:
 
 parts:
 
+  libzmq:
+    plugin: autotools
+    source: https://github.com/zeromq/libzmq.git
+    source-type: git
+    source-tag: v4.3.4
+
+  czmq:
+    after:
+      - libzmq
+    plugin: autotools
+    source: https://github.com/zeromq/czmq.git
+    source-type: git
+    source-tag: v4.2.1
+
   srsran:
     plugin: cmake
+    after:
+      - czmq
     source: https://github.com/srsRAN/srsRAN.git
     source-type: git
     source-tag: release_22_04_1
