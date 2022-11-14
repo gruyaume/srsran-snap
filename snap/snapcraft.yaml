@@ -1,0 +1,65 @@
+name: srsran
+base: core20
+version: '22.04.1'
+summary: srsRAN is a 4G/5G software radio suite developed by SRS.
+description: srsRAN is a 4G/5G software radio suite developed by SRS.
+
+grade: devel
+confinement: devmode
+apps:
+  srsenb:
+    command: usr/bin/srsenb
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib/x86_64-linux-gnu/
+  install:
+    command: usr/bin/srsran_install_configs.sh
+layout:
+  /usr/share/srsran:
+    bind: $SNAP/usr/share/srsran
+parts:
+  libzmq:
+    plugin: autotools
+    source: https://github.com/zeromq/libzmq.git
+    source-type: git
+    source-tag: v4.3.4
+
+  czmq:
+    after:
+      - libzmq
+    plugin: autotools
+    source: https://github.com/zeromq/czmq.git
+    source-type: git
+    source-tag: v4.2.1
+
+  srsran:
+    plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+    after:
+      - czmq
+    source: https://github.com/srsLTE/srsLTE.git
+    source-type: git
+    source-tag: release_22_04_1
+    build-packages:
+      - build-essential
+      - cmake
+      - libfftw3-dev
+      - libmbedtls-dev
+      - libboost-program-options-dev
+      - libconfig++-dev
+      - libsctp-dev
+      - libzmq3-dev
+      - net-tools
+      - libboost-program-options1.71.0
+      - libconfig++9v5
+      - libfftw3-single3
+      - libmbedcrypto3
+      - libsctp1
+    stage-packages:
+      - libboost-program-options1.71.0
+      - libconfig++-dev
+      - libconfig++9v5
+      - libfftw3-single3
+      - libmbedcrypto3
+      - libsctp1
+
